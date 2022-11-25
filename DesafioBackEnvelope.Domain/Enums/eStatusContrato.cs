@@ -8,7 +8,8 @@ namespace DesafioBackEnvelope.Domain.Enums
 {
     public enum eStatusContrato : byte
     {
-        Pendente = 1, 
+        indefinido,
+        Pendente, 
         Vigente, 
         Encerrado
     }

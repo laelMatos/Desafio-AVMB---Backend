@@ -1,7 +1,7 @@
 ﻿using DesafioBackEnvelope.Application.DTOs;
 using DesafioBackEnvelope.Application.Interfaces;
 using DesafioBackEnvelope.Domain;
-
+using DesafioBackEnvelope.Domain.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -17,18 +17,20 @@ namespace DesafioBackEnvelope.Application.Services
     public class EnvelopeService : IEnvelopeService
     {
         private readonly DataContractJsonSerializerSettings _settingsJson;
+        private readonly IEnvelopeRepository _ENVELOPE_REPOS;
         private readonly JsonSerializerOptions _options;
         private readonly IConfiguration _config;
-        private object _dataRequest;
         private readonly HttpClient _client;
         private readonly string _token;
+        private object? _dataRequest;
 
-        public EnvelopeService(IConfiguration config)
+        public EnvelopeService(IConfiguration config, IEnvelopeRepository envelopeRepository)
         {
+            _ENVELOPE_REPOS = envelopeRepository;
             _config = config;
 
-            string? tk = _config["token"];
             string? url = _config["urlAPI"];
+            string? tk = _config["token"];
 
             if (string.IsNullOrEmpty(tk) || string.IsNullOrEmpty(url))
                 throw new Exception("O token ou a URL estão são dados");
@@ -123,16 +125,28 @@ namespace DesafioBackEnvelope.Application.Services
 
         public async Task<DadosEnvelope?> ConsultarStatus(int idEnvelope)
         {
-            _dataRequest = SetParamsRequest(new{
+            try
+            {
+                _dataRequest = SetParamsRequest(new
+                {
                     idEnvelope = idEnvelope,
                     getLobs = "N"
                 });
 
-            var result = new DataContractJsonSerializer(typeof(ResponseGetEvelope), _settingsJson);
+                var result = (ResponseGetEvelope?)new DataContractJsonSerializer(typeof(ResponseGetEvelope), _settingsJson)
+                    .ReadObject(Post_API_Asten(_dataRequest, "getDadosEnvelope").Result.Content.ReadAsStream());
 
-            ResponseGetEvelope? r = (ResponseGetEvelope?)result.ReadObject(Post_API_Asten(_dataRequest, "getDadosEnvelope").Result.Content.ReadAsStream());
+                if(result?.response != null && result?.response.status == Domain.Enums.eStatusEnvelope.Concluído)
+                    await _ENVELOPE_REPOS.InsertAsync(result?.response);
 
-            return r?.response;
+                return result?.response;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
         }
 
 

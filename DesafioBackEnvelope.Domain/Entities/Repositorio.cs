@@ -12,7 +12,7 @@ namespace DesafioBackEnvelope.Domain
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string id { get; set; }
+        public int id { get; set; }
 
         public Usuario Usuario { get; set; }
         [Required]

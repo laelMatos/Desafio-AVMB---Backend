@@ -80,7 +80,15 @@ namespace DesafioBackEnvelope.API.Controllers
         [HttpPost("{IdEnvelope}/signatario")]
         public async Task<object> NovoSignatario(int IdEnvelope, [FromBody]SignatarioRequestDTO signatario)
         {
-            return await _envelopeService.InserirSignatario( IdEnvelope, signatario);
+            try
+            {
+                return await _envelopeService.InserirSignatario( IdEnvelope, signatario);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -92,7 +100,15 @@ namespace DesafioBackEnvelope.API.Controllers
         [HttpPost("{idEnvelope}/Encaminhar")]
         public async Task<object> EncaminharParaAssinatura(int idEnvelope, DateTime? dataHoraEnvioAgendado)
         {
-            return await _envelopeService.EncaminharEnvelopeParaAssinatura(idEnvelope, dataHoraEnvioAgendado);
+            try
+            {
+                return await _envelopeService.EncaminharEnvelopeParaAssinatura(idEnvelope, dataHoraEnvioAgendado);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         /// <summary>

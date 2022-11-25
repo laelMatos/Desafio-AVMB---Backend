@@ -48,7 +48,7 @@ namespace DesafioBackEnvelope.Domain
 
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string id { get; set; }
+        public int id { get; set; }
         [Required]
         public string codigo { get; set; }
         [Required]

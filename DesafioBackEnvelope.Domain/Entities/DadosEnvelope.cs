@@ -9,12 +9,17 @@ namespace DesafioBackEnvelope.Domain
     [Table("Envelope")]
     public sealed class DadosEnvelope
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int id { get; set; }
         [Required]
+        [JsonIgnore]
+        public int idRepositorio { get { return this.Repositorio.id; } set { this.Repositorio.id = value; } }
+        [NotMapped]
         public Repositorio Repositorio { get; set; }
         [Required]
+        [JsonIgnore]
+        public int idUsuário { get { return this.Usuario.id; } set { this.Usuario.id = value; } }
+        [NotMapped]
         public Usuario Usuario { get; set; }
         [Required]
         public string descricao { get; set; }
