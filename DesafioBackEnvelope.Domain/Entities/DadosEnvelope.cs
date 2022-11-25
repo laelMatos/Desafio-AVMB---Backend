@@ -1,21 +1,21 @@
 ﻿using DesafioBackEnvelope.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.CompilerServices;
-using System.Text.Json;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace DesafioBackEnvelope.Domain
 {
+    [Table("Envelope")]
     public sealed class DadosEnvelope
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int id { get; set; }
         [Required]
-        public int RepositorioId { get; set; }
+        public Repositorio Repositorio { get; set; }
         [Required]
-        public int UsiarioId { get; set; }
+        public Usuario Usuario { get; set; }
         [Required]
         public string descricao { get; set; }
         public string? conteudo { get; set; }
@@ -32,16 +32,40 @@ namespace DesafioBackEnvelope.Domain
         public string? mensagem { get; set; }
         public string? mensagemObservadores { get; set; }
         public string? motivoCancelamento { get; set; }
+
+        [NotMapped]
+        [JsonIgnore] 
+        int _numeroPaginas;
+
         [Required]
-        public int numeroPaginas { get; set; }
+        public string numeroPaginas { get { return _numeroPaginas.ToString(); } set { _numeroPaginas = int.Parse(value); } }
+
+        [Required]
         public eStatusEnvelope status { get; set; }
+        public DateTime? dataEnvioAgendado { get; set; }
+        public DateTime? horaEnvioAgendado { get; set; }
+        [Required]
         public DateTime dataHoraCriacao { get; set; }
+        [Required]
         public DateTime dataHoraAlteracao { get; set; }
-        public string objetoContrato { get; set; }
-        public eStatusContrato statusContrato { get; set; }
-        public int? numContrato { get; set; }
+        public string? objetoContrato { get; set; }
+        public eStatusContrato? statusContrato { get; set; }
+
+        [NotMapped]
+        [JsonIgnore] 
+        int _numContrato;
+
+        public string? numContrato { get { return _numContrato > 0 ? _numContrato.ToString() : null; } set { _numContrato = ConvertStringForInt(value); } }
+
         public string? descricaoContratante { get; set; }
         public string? descricaoContratado { get; set; }
         public string? Envelope { get; set; }
+
+        private int ConvertStringForInt(string? val)
+        {
+            int r;
+            return (int.TryParse(val, out r)? r:0);
+
+        }
     }
 }

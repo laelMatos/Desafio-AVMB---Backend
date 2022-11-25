@@ -1,4 +1,5 @@
 ﻿using DesafioBackEnvelope.Application.DTOs;
+using DesafioBackEnvelope.Domain;
 using DesafioBackEnvelope.Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,6 @@ namespace DesafioBackEnvelope.Application.Interfaces
         /// </summary>
         /// <param name="idEnvelope">Codigo de identificação do envelope</param>
         /// <returns></returns>
-        Task<object> ConsultarStatus(int idEnvelope);
+        Task<DadosEnvelope> ConsultarStatus(int idEnvelope);
     }
 }
